@@ -1,0 +1,331 @@
+﻿<Window x:Class="Gui.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:ie="http://schemas.microsoft.com/expression/2010/interactivity"
+        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+        xmlns:local="clr-namespace:Gui"
+        mc:Ignorable="d"
+        Title="Race center" Height="502" Width="760" WindowStyle="SingleBorderWindow" ResizeMode="CanMinimize">
+    <Window.Resources>
+        <SolidColorBrush x:Key="BlackBrush" Color="Black"/>
+
+        <SolidColorBrush x:Key="SolidBorderBrush" Color="#888" />
+
+        <SolidColorBrush x:Key="GreenBrush" Color="Green" />
+
+        <SolidColorBrush x:Key="DisabledBackgroundBrush" Color="#EEE" />
+
+        <SolidColorBrush x:Key="DisabledBorderBrush" Color="#AAA" />
+
+        <SolidColorBrush x:Key="DisabledForegroundBrush" Color="#888" />
+
+        <Style TargetType="{x:Type TabItem}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type TabItem}">
+                        <Grid>
+                            <Border 
+                                Name="Border"
+                                Margin="0,0,-4,0" 
+                                Background="{StaticResource BlackBrush}"
+                                BorderBrush="{StaticResource  SolidBorderBrush}" 
+                                BorderThickness="1,1,1,1" 
+                                CornerRadius="2,12,0,0" >
+                                <ContentPresenter x:Name="ContentSite"
+                                    VerticalAlignment="Center"
+                                    HorizontalAlignment="Center"
+                                    ContentSource="Header"
+                                    Margin="12,2,12,2"
+                                    RecognizesAccessKey="True"/>
+                            </Border>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter Property="Panel.ZIndex" Value="100" />
+                                <Setter TargetName="Border" Property="Background" Value="{StaticResource GreenBrush}" />
+                                <Setter TargetName="Border" Property="BorderThickness" Value="1,1,1,0" />
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="Border" Property="Background" Value="{StaticResource DisabledBackgroundBrush}" />
+                                <Setter TargetName="Border" Property="BorderBrush" Value="{StaticResource DisabledBorderBrush}" />
+                                <Setter Property="Foreground" Value="{StaticResource DisabledForegroundBrush}" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+    <TabControl SelectedIndex="{Binding Tab, Mode=TwoWay}" TabStripPlacement="Left"  Background="#FFFBFBFB">
+        <TabItem DataContext="{Binding Children[1]}" Header="Runners" Height="50" Foreground="White" >
+            <Grid Margin="0,5,0,-1">
+                <DataGrid  x:Name="RunnersTable" ItemsSource="{Binding AllRunners, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True" CanUserResizeRows="False" CanUserAddRows="False" CanUserDeleteRows="False" SelectionMode="Single" AutoGenerateColumns="False" GridLinesVisibility="All" Margin="10,2,9,360" SelectedItem="{Binding Selected, Mode=OneWayToSource}">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Email" Binding="{Binding email}" Width="*"/>
+                        <DataGridTextColumn Header="Name" Binding="{Binding firstName}" Width="*"/>
+                        <DataGridTextColumn Header="Last name" Binding="{Binding lastName}" Width="*"/>
+                        <DataGridTextColumn Header="Address" Binding="{Binding address}" Width="*"/>
+                        <DataGridTextColumn Header="Club" Binding="{Binding club}" Width="*"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+                <Button Content="Add" HorizontalAlignment="Left" VerticalAlignment="Top" Width="87" Background="#FFDADADA" BorderBrush="Black" Margin="531,424,0,0" Command="{Binding AddRunnerCommand}" CommandParameter="{Binding Runner}"/>
+                <Button Content="Delete" HorizontalAlignment="Left" VerticalAlignment="Top" Width="87" Background="#FFDADADA" BorderBrush="Black" Command="{Binding DeleteRunnerCommand}" CommandParameter="{Binding SelectedItem, ElementName=RunnersTable}" RenderTransformOrigin="0.491,-1.067" Margin="19,424,0,0"/>
+                <Label Content="Email" HorizontalAlignment="Left" Margin="10,158,0,0" VerticalAlignment="Top"/>
+                <TextBox HorizontalAlignment="Left" Height="23" Margin="81,164,0,0" TextWrapping="Wrap" Text="{Binding Runner.email, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Top" Width="228"/>
+                <Label Content="Name" HorizontalAlignment="Left" Margin="10,189,0,0" VerticalAlignment="Top"/>
+                <Label Content="Last name" HorizontalAlignment="Left" Margin="10,220,0,0" VerticalAlignment="Top"/>
+                <Label Content="Club" HorizontalAlignment="Left" Margin="10,282,0,0" VerticalAlignment="Top"/>
+                <Label Content="Address" HorizontalAlignment="Left" Margin="10,251,0,0" VerticalAlignment="Top"/>
+                <TextBox Text="{Binding Runner.firstName, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" Height="23" Margin="81,192,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="228"/>
+                <TextBox Text="{Binding Runner.lastName, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" Height="23" Margin="81,224,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="228"/>
+                <TextBox Text="{Binding Runner.address, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" Height="23" Margin="81,252,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="228"/>
+                <TextBox Text="{Binding Runner.club, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" Height="23" Margin="81,285,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="228"/>
+                <Label  Content="Password" HorizontalAlignment="Left" Margin="10,319,0,0" VerticalAlignment="Top"/>
+                <TextBox Text="{Binding Runner.password, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" Height="23" Margin="81,322,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="228"/>
+                <Button Content="Update" HorizontalAlignment="Left" VerticalAlignment="Top" Width="87" Background="#FFDADADA" BorderBrush="Black" Margin="395,424,0,0" Command="{Binding UpdateRunnerCommand}" CommandParameter="{Binding Runner}"/>
+                <Button Content="Get runner expenses" HorizontalAlignment="Left" VerticalAlignment="Top" Width="139" Background="#FFDADADA" BorderBrush="Black" Margin="384,158,0,0" Command="{Binding GetRunnerExpensesCommand}" CommandParameter="{Binding SelectedItem, ElementName=RunnersTable}"/>
+            </Grid>
+        </TabItem>
+        <TabItem DataContext="{Binding Children[0]}" Header="Chronometers" Height="50" Foreground="White" Background="Transparent" HorizontalAlignment="Right" Width="104">
+            <Grid Margin="0,5,0,-7">
+                <DataGrid  x:Name="ChronometersTable" ItemsSource="{Binding AllChronometers, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}" IsReadOnly="True" CanUserResizeRows="False" CanUserAddRows="False" CanUserDeleteRows="False" SelectionMode="Single" AutoGenerateColumns="False" GridLinesVisibility="All" Canvas.Top="10" Canvas.Left="10" Margin="10,2,9,366" SelectedItem="{Binding Selected, Mode=OneWayToSource}">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Email" Binding="{Binding email}" Width="*"/>
+                        <DataGridTextColumn Header="Name" Binding="{Binding firstName}" Width="*"/>
+                        <DataGridTextColumn Header="Last name" Binding="{Binding lastName}" Width="*"/>
+                        <DataGridTextColumn Header="Address" Binding="{Binding address}" Width="*"/>
+                        <DataGridTextColumn Header="Company" Binding="{Binding companyName}" Width="*"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+                <Button Content="Add" HorizontalAlignment="Left" VerticalAlignment="Top" Width="87" Background="#FFDADADA" BorderBrush="Black" Canvas.Left="465" Canvas.Top="15" Margin="531,424,0,0" Command="{Binding AddChronometerCommand}" CommandParameter="{Binding Chronometer}"/>
+                <Button Content="Delete" HorizontalAlignment="Left" VerticalAlignment="Top" Width="87" Background="#FFDADADA" BorderBrush="Black" Command="{Binding DeleteChronometerCommand}" CommandParameter="{Binding ElementName=ChronometersTable, Path=SelectedItem}" Canvas.Left="465" Canvas.Top="113" RenderTransformOrigin="0.491,-1.067" Margin="19,424,0,0"/>
+                <Label Content="Email" HorizontalAlignment="Left" Margin="10,158,0,0" VerticalAlignment="Top"/>
+                <TextBox HorizontalAlignment="Left" Height="23" Margin="81,164,0,0" TextWrapping="Wrap" Text="{Binding Chronometer.email, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Top" Width="228"/>
+                <Label Content="Name" HorizontalAlignment="Left" Margin="10,189,0,0" VerticalAlignment="Top"/>
+                <Label Content="Last name" HorizontalAlignment="Left" Margin="10,220,0,0" VerticalAlignment="Top"/>
+                <Label Content="Company" HorizontalAlignment="Left" Margin="10,282,0,0" VerticalAlignment="Top"/>
+                <Label Content="Address" HorizontalAlignment="Left" Margin="10,251,0,0" VerticalAlignment="Top"/>
+                <TextBox Text="{Binding Chronometer.firstName, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" Height="23" Margin="81,192,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="228"/>
+                <TextBox Text="{Binding Chronometer.lastName, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" Height="23" Margin="81,224,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="228"/>
+                <TextBox Text="{Binding Chronometer.address, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" Height="23" Margin="81,252,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="228"/>
+                <TextBox Text="{Binding Chronometer.companyName, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" Height="23" Margin="81,285,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="228"/>
+                <Label  Content="Password" HorizontalAlignment="Left" Margin="10,319,0,0" VerticalAlignment="Top"/>
+                <TextBox Text="{Binding Chronometer.password, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" Height="23" Margin="81,322,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="228"/>
+                <Button Content="Update" HorizontalAlignment="Left" VerticalAlignment="Top" Width="87" Background="#FFDADADA" BorderBrush="Black" Margin="395,424,0,0" Command="{Binding UpdateChronometerCommand}" CommandParameter="{Binding Chronometer}"/>
+            </Grid>
+        </TabItem>
+        <TabItem DataContext="{Binding Children[2]}" Header="Organizers" Height="50" Foreground="White" VerticalAlignment="Top">
+            <Grid Margin="0,5,0,-1">
+                <DataGrid  x:Name="OrganizerTable" ItemsSource="{Binding AllOrganizers, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True" CanUserResizeRows="False" CanUserAddRows="False" CanUserDeleteRows="False" SelectionMode="Single" AutoGenerateColumns="False" GridLinesVisibility="All" Margin="10,2,9,360" SelectedItem="{Binding Selected, Mode=OneWayToSource}">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Email" Binding="{Binding email}" Width="*"/>
+                        <DataGridTextColumn Header="Name" Binding="{Binding firstName}" Width="*"/>
+                        <DataGridTextColumn Header="Last name" Binding="{Binding lastName}" Width="*"/>
+                        <DataGridTextColumn Header="Address" Binding="{Binding address}" Width="*"/>
+                        <DataGridTextColumn Header="Phone" Binding="{Binding phoneNumber}" Width="*"/>
+                        <DataGridTextColumn Header="IsAdmin" Binding="{Binding isAdmin}" Width="*"/>
+                        <DataGridTextColumn Header="Supervisor" Binding="{Binding Supervisor.email}" Width="*"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+                <Button Content="Add" HorizontalAlignment="Left" VerticalAlignment="Top" Width="87" Background="#FFDADADA" BorderBrush="Black" Margin="531,424,0,0" Command="{Binding AddOrganizerCommand}" CommandParameter="{Binding Organizer}"/>
+                <Button Content="Delete" HorizontalAlignment="Left" VerticalAlignment="Top" Width="87" Background="#FFDADADA" BorderBrush="Black" Command="{Binding DeleteOrganizerCommand}" CommandParameter="{Binding SelectedItem, ElementName=OrganizerTable}" RenderTransformOrigin="0.491,-1.067" Margin="19,424,0,0"/>
+                <Label Content="Email" HorizontalAlignment="Left" Margin="10,158,0,0" VerticalAlignment="Top"/>
+                <TextBox HorizontalAlignment="Left" Height="23" Margin="81,164,0,0" TextWrapping="Wrap" Text="{Binding Organizer.email, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Top" Width="228"/>
+                <Label Content="Name" HorizontalAlignment="Left" Margin="10,189,0,0" VerticalAlignment="Top"/>
+                <Label Content="Last name" HorizontalAlignment="Left" Margin="10,220,0,0" VerticalAlignment="Top"/>
+                <Label Content="Phone" HorizontalAlignment="Left" Margin="10,282,0,0" VerticalAlignment="Top"/>
+                <Label Content="Address" HorizontalAlignment="Left" Margin="10,251,0,0" VerticalAlignment="Top"/>
+                <TextBox Text="{Binding Organizer.firstName, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" Height="23" Margin="81,192,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="228"/>
+                <TextBox Text="{Binding Organizer.lastName, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" Height="23" Margin="81,224,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="228"/>
+                <TextBox Text="{Binding Organizer.address, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" Height="23" Margin="81,252,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="228"/>
+                <TextBox Text="{Binding Organizer.phoneNumber, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" Height="23" Margin="81,285,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="228"/>
+                <Label  Content="Password" HorizontalAlignment="Left" Margin="10,319,0,0" VerticalAlignment="Top"/>
+                <TextBox Text="{Binding Organizer.password, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" Height="23" Margin="81,322,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="228"/>
+                <Button Content="Update" HorizontalAlignment="Left" VerticalAlignment="Top" Width="87" Background="#FFDADADA" BorderBrush="Black" Margin="395,424,0,0" Command="{Binding UpdateOrganizerCommand}" CommandParameter="{Binding Organizer}"/>
+                <Label  Content="Supervisor" HorizontalAlignment="Left" Margin="10,363,0,0" VerticalAlignment="Top"/>
+                <ComboBox SelectedItem="{Binding SelectedSupervisor, Mode=TwoWay}" ItemsSource="{Binding Path=Supervisors}"  HorizontalAlignment="Left" Margin="81,367,0,0" VerticalAlignment="Top" Width="228"/>
+                <Label Content="Is Admin"  HorizontalAlignment="Left" Margin="10,127,0,0" VerticalAlignment="Top"/>
+                <CheckBox IsChecked="{Binding Organizer.isAdmin}" Content="Admin" HorizontalAlignment="Left" Margin="81,133,0,0" VerticalAlignment="Top"/>
+            </Grid>
+        </TabItem>
+        <TabItem DataContext="{Binding Children[5]}" Header="Registrations" Height="50" Foreground="White">
+            <Grid Margin="0,5,0,-1">
+                <DataGrid  x:Name="RegistrationsTable" ItemsSource="{Binding AllRegistrations, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True" CanUserResizeRows="False" CanUserAddRows="False" CanUserDeleteRows="False" SelectionMode="Single" AutoGenerateColumns="False" GridLinesVisibility="All" Margin="10,2,9,360" SelectedItem="{Binding Selected, Mode=OneWayToSource}">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Runner" Binding="{Binding Runner_email}" Width="*"/>
+                        <DataGridTextColumn Header="Race" Binding="{Binding Race_raceID}" Width="*"/>
+                        <DataGridTextColumn Header="Start number" Binding="{Binding startNumber}" Width="*"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+                <Button Content="Add" HorizontalAlignment="Left" VerticalAlignment="Top" Width="87" Background="#FFDADADA" BorderBrush="Black" Margin="531,424,0,0" Command="{Binding AddRegistrationCommand}" CommandParameter="{Binding Registration}"/>
+                <Button Content="Delete" HorizontalAlignment="Left" VerticalAlignment="Top" Width="87" Background="#FFDADADA" BorderBrush="Black" Command="{Binding DeleteRegistrationCommand}" CommandParameter="{Binding SelectedItem, ElementName=RegistrationsTable}" RenderTransformOrigin="0.491,-1.067" Margin="19,424,0,0" />
+                <Label Content="Start number" HorizontalAlignment="Left" Margin="14,133,0,0" VerticalAlignment="Top"/>
+                <Button Content="Update" HorizontalAlignment="Left" VerticalAlignment="Top" Width="87" Background="#FFDADADA" BorderBrush="Black" Margin="395,424,0,0" Command="{Binding UpdateRegistrationCommand}" CommandParameter="{Binding Registration}"/>
+                <Label  Content="Runner" HorizontalAlignment="Left" Margin="13,178,0,0" VerticalAlignment="Top"/>
+                <ComboBox SelectedItem="{Binding SelectedRunner, Mode=TwoWay}" ItemsSource="{Binding Runners}"  HorizontalAlignment="Left" Margin="100,182,0,0" VerticalAlignment="Top" Width="213"/>
+                <TextBox HorizontalAlignment="Left" Height="23" Margin="100,141,0,0" TextWrapping="Wrap" Text="{Binding Registration.startNumber, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Top" Width="213" PreviewTextInput="NumberValidationTextBox"/>
+                <Label  Content="Race" HorizontalAlignment="Left" Margin="14,221,0,0" VerticalAlignment="Top"/>
+                <ComboBox SelectedItem="{Binding SelectedRace, Mode=TwoWay}" DisplayMemberPath="name" ItemsSource="{Binding Races}"  HorizontalAlignment="Left" Margin="100,225,0,0" VerticalAlignment="Top" Width="213"/>
+                <Button Content="Get registration payments" HorizontalAlignment="Left" VerticalAlignment="Top" Width="168" Background="#FFDADADA" BorderBrush="Black" Margin="426,149,0,0" Command="{Binding GetRegPaymentsCommand}" CommandParameter="{Binding SelectedItem, ElementName=RegistrationsTable}"/>
+
+            </Grid>
+        </TabItem>
+        <TabItem DataContext="{Binding Children[3]}" Header="Events" Height="50" Foreground="White">
+            <Grid Margin="0,5,0,-1">
+                <Grid Margin="0,5,0,-5">
+                    <DataGrid  x:Name="EventsTable" ItemsSource="{Binding AllEvents, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True" CanUserResizeRows="False" CanUserAddRows="False" CanUserDeleteRows="False" SelectionMode="Single" AutoGenerateColumns="False" GridLinesVisibility="All" Margin="10,2,9,360" SelectedItem="{Binding Selected, Mode=OneWayToSource}">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Name" Binding="{Binding name}" Width="*"/>
+                            <DataGridTextColumn Header="Start date" Binding="{Binding startDate}" Width="*"/>
+                            <DataGridTextColumn Header="End date" Binding="{Binding endDate}" Width="*"/>
+                            <DataGridTextColumn Header="Website" Binding="{Binding website}" Width="*"/>
+                            <DataGridTextColumn Header="Bank account" Binding="{Binding bankAccount}" Width="*"/>
+                            <DataGridTextColumn Header="Organizer" Binding="{Binding Organizer_email}" Width="*"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                    <Button Content="Add" HorizontalAlignment="Left" VerticalAlignment="Top" Width="87" Background="#FFDADADA" BorderBrush="Black" Margin="531,424,0,0" Command="{Binding AddEventCommand}" CommandParameter="{Binding Event}"/>
+                    <Button Content="Delete" HorizontalAlignment="Left" VerticalAlignment="Top" Width="87" Background="#FFDADADA" BorderBrush="Black" Command="{Binding DeleteEventCommand}" CommandParameter="{Binding SelectedItem, ElementName=EventsTable}" RenderTransformOrigin="0.491,-1.067" Margin="19,424,0,0"/>
+                    <Label Content="Name" HorizontalAlignment="Left" Margin="10,158,0,0" VerticalAlignment="Top"/>
+                    <TextBox HorizontalAlignment="Left" Height="23" Margin="96,164,0,0" TextWrapping="Wrap" Text="{Binding Event.name, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Top" Width="213"/>
+                    <Label Content="Start date" HorizontalAlignment="Left" Margin="10,189,0,0" VerticalAlignment="Top"/>
+                    <Label Content="End date" HorizontalAlignment="Left" Margin="10,220,0,0" VerticalAlignment="Top"/>
+                    <Label Content="Website" HorizontalAlignment="Left" Margin="10,282,0,0" VerticalAlignment="Top"/>
+                    <Label Content="Bank account" HorizontalAlignment="Left" Margin="10,251,0,0" VerticalAlignment="Top"/>
+                    <TextBox Text="{Binding Event.bankAccount, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" Height="23" Margin="96,256,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="213"/>
+                    <TextBox Text="{Binding Event.website, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" Height="23" Margin="96,285,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="213"/>
+                    <Button Content="Update" HorizontalAlignment="Left" VerticalAlignment="Top" Width="87" Background="#FFDADADA" BorderBrush="Black" Margin="395,424,0,0" Command="{Binding UpdateEventCommand}" CommandParameter="{Binding Event}"/>
+                    <Label  Content="Organizer" HorizontalAlignment="Left" Margin="10,330,0,0" VerticalAlignment="Top"/>
+                    <ComboBox SelectedItem="{Binding SelectedOrganizer, Mode=TwoWay}" ItemsSource="{Binding Organizers}"  HorizontalAlignment="Left" Margin="96,334,0,0" VerticalAlignment="Top" Width="213"/>
+                    <DatePicker SelectedDate="{Binding Event.startDate}" HorizontalAlignment="Left" Margin="96,198,0,0" VerticalAlignment="Top" Width="213"/>
+                    <DatePicker SelectedDate="{Binding Event.endDate}" HorizontalAlignment="Left" Margin="96,227,0,0" VerticalAlignment="Top" Width="213"/>
+                    <Button Content="Get event chronometers" HorizontalAlignment="Left" VerticalAlignment="Top" Width="157" Background="#FFDADADA" BorderBrush="Black" Margin="434,164,0,0" Command="{Binding GetEventChronometersCommand}" CommandParameter="{Binding SelectedItem, ElementName=EventsTable}"/>
+                </Grid>
+            </Grid>
+        </TabItem>
+        <TabItem DataContext="{Binding Children[4]}"   Header="Races" Height="50" Foreground="White" >
+            <Grid Margin="0,5,0,-1">
+                <DataGrid  x:Name="RacesTable" ItemsSource="{Binding AllRaces, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True" CanUserResizeRows="False" CanUserAddRows="False" CanUserDeleteRows="False" SelectionMode="Single" AutoGenerateColumns="False" GridLinesVisibility="All" Margin="10,2,9,360" SelectedItem="{Binding Selected, Mode=OneWayToSource}">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Name" Binding="{Binding name}" Width="*"/>
+                        <DataGridTextColumn Header="Type" Binding="{Binding type}" Width="*"/>
+                        <DataGridTextColumn Header="Date" Binding="{Binding date}" Width="*"/>
+                        <DataGridTextColumn Header="Distance" Binding="{Binding distance}" Width="*"/>
+                        <DataGridTextColumn Header="Min bib" Binding="{Binding minStartNumber}" Width="*"/>
+                        <DataGridTextColumn Header="Max bib" Binding="{Binding maxStartNumber}" Width="*"/>
+                        <DataGridTextColumn Header="Price" Binding="{Binding startFarePrice}" Width="*"/>
+                        <DataGridTextColumn Header="Chronometer" Binding="{Binding Chronometer_email}" Width="*"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+                <Button Content="Add" HorizontalAlignment="Left" VerticalAlignment="Top" Width="87" Background="#FFDADADA" BorderBrush="Black" Margin="531,424,0,0" Command="{Binding AddRaceCommand}" CommandParameter="{Binding Race}"/>
+                <Button Content="Delete" HorizontalAlignment="Left" VerticalAlignment="Top" Width="87" Background="#FFDADADA" BorderBrush="Black" Command="{Binding DeleteRaceCommand}" CommandParameter="{Binding SelectedItem, ElementName=RacesTable}" RenderTransformOrigin="0.491,-1.067" Margin="19,424,0,0"/>
+                <Label Content="Name" HorizontalAlignment="Left" Margin="10,158,0,0" VerticalAlignment="Top"/>
+                <TextBox HorizontalAlignment="Left" Height="23" Margin="96,164,0,0" TextWrapping="Wrap" Text="{Binding Race.name, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Top" Width="213"/>
+                <Label Content="Date" HorizontalAlignment="Left" Margin="10,189,0,0" VerticalAlignment="Top"/>
+                <Label Content="Distance" HorizontalAlignment="Left" Margin="10,220,0,0" VerticalAlignment="Top"/>
+                <Label Content="Price" HorizontalAlignment="Left" Margin="10,282,0,0" VerticalAlignment="Top"/>
+                <Label Content="Min bib" HorizontalAlignment="Left" Margin="10,251,0,0" VerticalAlignment="Top"/>
+                <TextBox Text="{Binding Race.minStartNumber, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" Height="23" Margin="96,256,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="213" PreviewTextInput="NumberValidationTextBox"/>
+                <TextBox Text="{Binding Race.startFarePrice, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" Height="23" Margin="96,285,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="213" PreviewTextInput="NumberValidationTextBox"/>
+                <Button Content="Update" HorizontalAlignment="Left" VerticalAlignment="Top" Width="87" Background="#FFDADADA" BorderBrush="Black" Margin="395,424,0,0" Command="{Binding UpdateRaceCommand}" CommandParameter="{Binding Race}"/>
+                <Label  Content="Chronometer" HorizontalAlignment="Left" Margin="10,350,0,0" VerticalAlignment="Top"/>
+                <ComboBox SelectedItem="{Binding SelectedChronometer, Mode=TwoWay}" ItemsSource="{Binding Chronometers}"  HorizontalAlignment="Left" Margin="96,354,0,0" VerticalAlignment="Top" Width="213"/>
+                <DatePicker SelectedDate="{Binding Race.date}" HorizontalAlignment="Left" Margin="96,198,0,0" VerticalAlignment="Top" Width="213"/>
+                <Label Content="Type" HorizontalAlignment="Left" Margin="10,130,0,0" VerticalAlignment="Top"/>
+                <ComboBox SelectedItem="{Binding Race.type, Mode=TwoWay}" ItemsSource="{Binding RaceTypes}"  HorizontalAlignment="Left" Margin="96,134,0,0" VerticalAlignment="Top" Width="213">
+
+                </ComboBox>
+                <Label Content="Max bib" HorizontalAlignment="Left" Margin="10,313,0,0" VerticalAlignment="Top"/>
+                <TextBox Text="{Binding Race.maxStartNumber, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" Height="23" Margin="96,318,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="213" PreviewTextInput="NumberValidationTextBox"/>
+                <TextBox HorizontalAlignment="Left" Height="23" Margin="96,228,0,0" TextWrapping="Wrap" Text="{Binding Race.distance, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Top" Width="213" PreviewTextInput="NumberValidationTextBox"/>
+                <Label  Content="Event" HorizontalAlignment="Left" Margin="10,377,0,0" VerticalAlignment="Top"/>
+                <ComboBox SelectedItem="{Binding SelectedEvent, Mode=TwoWay}" DisplayMemberPath="name" ItemsSource="{Binding Events}"  HorizontalAlignment="Left" Margin="96,381,0,0" VerticalAlignment="Top" Width="213"/>
+                <Button Content="Consolidate race starter's list" HorizontalAlignment="Left" VerticalAlignment="Top" Width="189" Background="#FFDADADA" BorderBrush="Black" Margin="379,143,0,0" Command="{Binding ConsolidateRaceCommand}" CommandParameter="{Binding SelectedItem, ElementName=RacesTable}"/>
+            </Grid>
+        </TabItem>
+        <TabItem DataContext="{Binding Children[6]}" Header="Invoices" Height="50" Foreground="White" >
+            <Grid Margin="0,5,0,-1">
+                <DataGrid  x:Name="InvoicesTable" ItemsSource="{Binding AllInvoices, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True" CanUserResizeRows="False" CanUserAddRows="False" CanUserDeleteRows="False" SelectionMode="Single" AutoGenerateColumns="False" GridLinesVisibility="All" Margin="10,2,9,360" SelectedItem="{Binding Selected, Mode=OneWayToSource}">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Code" Binding="{Binding invoiceCode}" Width="*"/>
+                        <DataGridTextColumn Header="Registration" Binding="{Binding Registration.Runner_email}" Width="*"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+                <Button Content="Add" HorizontalAlignment="Left" VerticalAlignment="Top" Width="87" Background="#FFDADADA" BorderBrush="Black" Margin="531,424,0,0" Command="{Binding AddInvoiceCommand}" CommandParameter="{Binding Invoice}"/>
+                <Button Content="Delete" HorizontalAlignment="Left" VerticalAlignment="Top" Width="87" Background="#FFDADADA" BorderBrush="Black" Command="{Binding DeleteInvoiceCommand}" CommandParameter="{Binding SelectedItem, ElementName=InvoicesTable}" RenderTransformOrigin="0.491,-1.067" Margin="19,424,0,0" />
+                <Label Content="" HorizontalAlignment="Left" Margin="14,133,0,0" VerticalAlignment="Top"/>
+                <Button Content="Update" HorizontalAlignment="Left" VerticalAlignment="Top" Width="87" Background="#FFDADADA" BorderBrush="Black" Margin="395,424,0,0" Command="{Binding UpdateInvoiceCommand}" CommandParameter="{Binding Invoice}"/>
+                <Label  Content="Regsitration" HorizontalAlignment="Left" Margin="13,178,0,0" VerticalAlignment="Top"/>
+                <ComboBox SelectedItem="{Binding SelectedRegistration, Mode=TwoWay}" ItemsSource="{Binding Registrations}"  HorizontalAlignment="Left" Margin="100,182,0,0" VerticalAlignment="Top" Width="213">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock>
+                                <Run Text="{Binding Runner_email}" />
+                                <Run Text="{Binding Race_raceID}" />
+                            </TextBlock>
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+            </Grid>
+        </TabItem>
+
+        <TabItem DataContext="{Binding Children[7]}" Header="Payments" Height="50" Foreground="White" >
+            <Grid Margin="0,5,0,-1">
+                <DataGrid  x:Name="PaymentsTable" ItemsSource="{Binding AllPayments, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True" CanUserResizeRows="False" CanUserAddRows="False" CanUserDeleteRows="False" SelectionMode="Single" AutoGenerateColumns="False" GridLinesVisibility="All" Margin="10,2,9,360" SelectedItem="{Binding Selected, Mode=OneWayToSource}">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Type" Binding="{Binding type}" Width="*"/>
+                        <DataGridTextColumn Header="Money" Binding="{Binding moneyPaid}" Width="*"/>
+                        <DataGridTextColumn Header="Invoice" Binding="{Binding Invoice_invoiceCode}" Width="*"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+                <Button Content="Add" HorizontalAlignment="Left" VerticalAlignment="Top" Width="87" Background="#FFDADADA" BorderBrush="Black" Margin="531,424,0,0" Command="{Binding AddPaymentCommand}" CommandParameter="{Binding Payment}"/>
+                <Button Content="Delete" HorizontalAlignment="Left" VerticalAlignment="Top" Width="87" Background="#FFDADADA" BorderBrush="Black" Command="{Binding DeletePaymentCommand}" CommandParameter="{Binding SelectedItem, ElementName=PaymentsTable}" RenderTransformOrigin="0.491,-1.067" Margin="19,424,0,0" />
+                <Button Content="Update" HorizontalAlignment="Left" VerticalAlignment="Top" Width="87" Background="#FFDADADA" BorderBrush="Black" Margin="395,424,0,0" Command="{Binding UpdatePaymentCommand}" CommandParameter="{Binding Payment}"/>
+                <Label  Content="Invoice" HorizontalAlignment="Left" Margin="13,178,0,0" VerticalAlignment="Top"/>
+                <ComboBox SelectedItem="{Binding SelectedInvoice, Mode=TwoWay}" ItemsSource="{Binding Invoices}"  HorizontalAlignment="Left" Margin="100,182,0,0" VerticalAlignment="Top" Width="213">
+                </ComboBox>
+                <Label Content="Type" HorizontalAlignment="Left" Margin="13,130,0,0" VerticalAlignment="Top"/>
+                <Label Content="Money" HorizontalAlignment="Left" Margin="10,220,0,0" VerticalAlignment="Top"/>
+                <ComboBox SelectedItem="{Binding Payment.type, Mode=TwoWay}" ItemsSource="{Binding PaymentTypes}"  HorizontalAlignment="Left" Margin="100,134,0,0" VerticalAlignment="Top" Width="213"/>
+                <TextBox HorizontalAlignment="Left" Height="23" Margin="100,223,0,0" TextWrapping="Wrap" Text="{Binding Payment.moneyPaid, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Top" Width="213" PreviewTextInput="NumberValidationTextBox"/>
+            </Grid>
+        </TabItem>
+
+        <TabItem DataContext="{Binding Children[8]}" Header="Results" Height="50" Foreground="White" >
+            <Grid Margin="0,5,0,-1">
+                <DataGrid  x:Name="ResultsTable" ItemsSource="{Binding AllResults, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True" CanUserResizeRows="False" CanUserAddRows="False" CanUserDeleteRows="False" SelectionMode="Single" AutoGenerateColumns="False" GridLinesVisibility="All" Margin="10,2,9,360" SelectedItem="{Binding Selected, Mode=OneWayToSource}">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="TagID" Binding="{Binding tagID}" Width="*"/>
+                        <DataGridTextColumn Header="H" Binding="{Binding hour}" Width="*"/>
+                        <DataGridTextColumn Header="Min" Binding="{Binding minute}" Width="*"/>
+                        <DataGridTextColumn Header="Sec" Binding="{Binding second}" Width="*"/>
+                        <DataGridTextColumn Header="Registration" Binding="{Binding Registration.Runner_email}" Width="*"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+                <Button Content="Add" HorizontalAlignment="Left" VerticalAlignment="Top" Width="87" Background="#FFDADADA" BorderBrush="Black" Margin="531,424,0,0" Command="{Binding AddResultCommand}" CommandParameter="{Binding Result}"/>
+                <Button Content="Delete" HorizontalAlignment="Left" VerticalAlignment="Top" Width="87" Background="#FFDADADA" BorderBrush="Black" Command="{Binding DeleteResultCommand}" CommandParameter="{Binding SelectedItem, ElementName=ResultsTable}" RenderTransformOrigin="0.491,-1.067" Margin="19,424,0,0" />
+                <Button Content="Update" HorizontalAlignment="Left" VerticalAlignment="Top" Width="87" Background="#FFDADADA" BorderBrush="Black" Margin="395,424,0,0" Command="{Binding UpdateResultCommand}" CommandParameter="{Binding Result}"/>
+                <Label  Content="Regsitration" HorizontalAlignment="Left" Margin="13,178,0,0" VerticalAlignment="Top"/>
+                <ComboBox SelectedItem="{Binding SelectedRegistration, Mode=TwoWay}" ItemsSource="{Binding Registrations}"  HorizontalAlignment="Left" Margin="100,182,0,0" VerticalAlignment="Top" Width="213">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock><Run Text="{Binding Runner_email}" /><Run Text=" "/><Run Text="{Binding Race_raceID}" /></TextBlock>
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+                <Label HorizontalAlignment="Left" Margin="19,225,0,0" VerticalAlignment="Top"/>
+                <Label Content="Minutes" HorizontalAlignment="Left" Margin="19,251,0,0" VerticalAlignment="Top"/>
+                <Label Content="Seconds" HorizontalAlignment="Left" Margin="19,277,0,0" VerticalAlignment="Top"/>
+                <TextBox HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="{Binding Result.hour, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Top" Width="213" PreviewTextInput="NumberValidationTextBox" Margin="100,225,0,0"/>
+                <Label Content="Hours" HorizontalAlignment="Left" Margin="19,222,0,0" VerticalAlignment="Top"/>
+                <TextBox HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="{Binding Result.minute, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Top" Width="213" PreviewTextInput="NumberValidationTextBox" Margin="100,254,0,0"/>
+                <TextBox HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="{Binding Result.second, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Top" Width="213" PreviewTextInput="NumberValidationTextBox" Margin="100,282,0,0"/>
+            </Grid>
+        </TabItem>
+
+
+
+    </TabControl>
+</Window>
+
