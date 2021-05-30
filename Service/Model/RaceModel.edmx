@@ -1,0 +1,771 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="RaceModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2008" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Events">
+          <Key>
+            <PropertyRef Name="eventID" />
+          </Key>
+          <Property Name="eventID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="name" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="website" Type="nvarchar(max)" />
+          <Property Name="bankAccount" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="startDate" Type="datetime" Nullable="false" />
+          <Property Name="endDate" Type="datetime" Nullable="false" />
+          <Property Name="Organizer_email" Type="nvarchar" MaxLength="100" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Invoices">
+          <Key>
+            <PropertyRef Name="invoiceCode" />
+          </Key>
+          <Property Name="invoiceCode" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Registration_Runner_email" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="Registration_Race_raceID" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Payments">
+          <Key>
+            <PropertyRef Name="paymentID" />
+          </Key>
+          <Property Name="paymentID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="moneyPaid" Type="float" Nullable="false" />
+          <Property Name="type" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="Invoice_invoiceCode" Type="uniqueidentifier" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Races">
+          <Key>
+            <PropertyRef Name="raceID" />
+          </Key>
+          <Property Name="raceID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="distance" Type="float" Nullable="false" />
+          <Property Name="date" Type="datetime" Nullable="false" />
+          <Property Name="name" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="minStartNumber" Type="int" Nullable="false" />
+          <Property Name="maxStartNumber" Type="int" Nullable="false" />
+          <Property Name="type" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="startFarePrice" Type="float" Nullable="false" />
+          <Property Name="Chronometer_email" Type="nvarchar" MaxLength="100" />
+          <Property Name="Event_eventID" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Registrations">
+          <Key>
+            <PropertyRef Name="Runner_email" />
+            <PropertyRef Name="Race_raceID" />
+          </Key>
+          <Property Name="startNumber" Type="int" Nullable="false" />
+          <Property Name="Runner_email" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="Race_raceID" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Results">
+          <Key>
+            <PropertyRef Name="tagID" />
+          </Key>
+          <Property Name="tagID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="hour" Type="int" Nullable="false" />
+          <Property Name="minute" Type="int" Nullable="false" />
+          <Property Name="second" Type="int" Nullable="false" />
+          <Property Name="Registration_Runner_email" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="Registration_Race_raceID" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Users">
+          <Key>
+            <PropertyRef Name="email" />
+          </Key>
+          <Property Name="email" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="firstName" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="lastName" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="address" Type="nvarchar(max)" />
+          <Property Name="password" Type="nvarchar(max)" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Users_Chronometer">
+          <Key>
+            <PropertyRef Name="email" />
+          </Key>
+          <Property Name="companyName" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="email" Type="nvarchar" MaxLength="100" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Users_Organizer">
+          <Key>
+            <PropertyRef Name="email" />
+          </Key>
+          <Property Name="isAdmin" Type="bit" Nullable="false" />
+          <Property Name="phoneNumber" Type="nvarchar(max)" />
+          <Property Name="supervisorEmail" Type="nvarchar" MaxLength="100" />
+          <Property Name="email" Type="nvarchar" MaxLength="100" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Users_Runner">
+          <Key>
+            <PropertyRef Name="email" />
+          </Key>
+          <Property Name="club" Type="nvarchar(max)" />
+          <Property Name="email" Type="nvarchar" MaxLength="100" Nullable="false" />
+        </EntityType>
+        <Association Name="FK_Chronometer_inherits_User">
+          <End Role="Users" Type="Self.Users" Multiplicity="1" />
+          <End Role="Users_Chronometer" Type="Self.Users_Chronometer" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="email" />
+            </Principal>
+            <Dependent Role="Users_Chronometer">
+              <PropertyRef Name="email" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_EventOrganizer">
+          <End Role="Users_Organizer" Type="Self.Users_Organizer" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Events" Type="Self.Events" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users_Organizer">
+              <PropertyRef Name="email" />
+            </Principal>
+            <Dependent Role="Events">
+              <PropertyRef Name="Organizer_email" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_MeasuresTime">
+          <End Role="Users_Chronometer" Type="Self.Users_Chronometer" Multiplicity="0..1" />
+          <End Role="Races" Type="Self.Races" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users_Chronometer">
+              <PropertyRef Name="email" />
+            </Principal>
+            <Dependent Role="Races">
+              <PropertyRef Name="Chronometer_email" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Organizer_inherits_User">
+          <End Role="Users" Type="Self.Users" Multiplicity="1" />
+          <End Role="Users_Organizer" Type="Self.Users_Organizer" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="email" />
+            </Principal>
+            <Dependent Role="Users_Organizer">
+              <PropertyRef Name="email" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PaidFor">
+          <End Role="Invoices" Type="Self.Invoices" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Payments" Type="Self.Payments" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Invoices">
+              <PropertyRef Name="invoiceCode" />
+            </Principal>
+            <Dependent Role="Payments">
+              <PropertyRef Name="Invoice_invoiceCode" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_RaceEvent">
+          <End Role="Events" Type="Self.Events" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Races" Type="Self.Races" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Events">
+              <PropertyRef Name="eventID" />
+            </Principal>
+            <Dependent Role="Races">
+              <PropertyRef Name="Event_eventID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_RegistrateredOn">
+          <End Role="Users_Runner" Type="Self.Users_Runner" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Registrations" Type="Self.Registrations" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users_Runner">
+              <PropertyRef Name="email" />
+            </Principal>
+            <Dependent Role="Registrations">
+              <PropertyRef Name="Runner_email" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_RegistrationInvoice">
+          <End Role="Registrations" Type="Self.Registrations" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Invoices" Type="Self.Invoices" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Registrations">
+              <PropertyRef Name="Runner_email" />
+              <PropertyRef Name="Race_raceID" />
+            </Principal>
+            <Dependent Role="Invoices">
+              <PropertyRef Name="Registration_Runner_email" />
+              <PropertyRef Name="Registration_Race_raceID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_RegistrationRace">
+          <End Role="Races" Type="Self.Races" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Registrations" Type="Self.Registrations" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Races">
+              <PropertyRef Name="raceID" />
+            </Principal>
+            <Dependent Role="Registrations">
+              <PropertyRef Name="Race_raceID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ResultRegistration">
+          <End Role="Registrations" Type="Self.Registrations" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Results" Type="Self.Results" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Registrations">
+              <PropertyRef Name="Runner_email" />
+              <PropertyRef Name="Race_raceID" />
+            </Principal>
+            <Dependent Role="Results">
+              <PropertyRef Name="Registration_Runner_email" />
+              <PropertyRef Name="Registration_Race_raceID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Runner_inherits_User">
+          <End Role="Users" Type="Self.Users" Multiplicity="1" />
+          <End Role="Users_Runner" Type="Self.Users_Runner" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="email" />
+            </Principal>
+            <Dependent Role="Users_Runner">
+              <PropertyRef Name="email" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Supervising">
+          <End Role="Users_Organizer" Type="Self.Users_Organizer" Multiplicity="0..1" />
+          <End Role="Users_Organizer1" Type="Self.Users_Organizer" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users_Organizer">
+              <PropertyRef Name="email" />
+            </Principal>
+            <Dependent Role="Users_Organizer1">
+              <PropertyRef Name="supervisorEmail" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Function Name="ConsolidateStartersList" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="Race_ID" Type="int" Mode="In" />
+        </Function>
+        <Function Name="GetEventChronometers" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="true" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="P_Event_ID" Type="int" Mode="In" />
+          <ReturnType>
+            <CollectionType>
+              <RowType>
+                <Property Name="email" Type="nvarchar(max)" />
+              </RowType>
+            </CollectionType>
+          </ReturnType>
+        </Function>
+        <Function Name="GetRunnerExpenses" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="Runner_email" Type="nvarchar(max)" Mode="In" />
+          <Parameter Name="Total_Expense" Type="decimal" Mode="InOut" />
+        </Function>
+        <Function Name="GetTotalRegistrationPayments" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="true" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="P_Runner_Email" Type="nvarchar(max)" Mode="In" />
+          <Parameter Name="P_Race_ID" Type="int" Mode="In" />
+          <ReturnType>
+            <CollectionType>
+              <RowType>
+                <Property Name="totalMoney" Type="decimal" Precision="18" Scale="0" />
+              </RowType>
+            </CollectionType>
+          </ReturnType>
+        </Function>
+        <EntityContainer Name="RaceModelStoreContainer">
+          <EntitySet Name="Events" EntityType="Self.Events" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Invoices" EntityType="Self.Invoices" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Payments" EntityType="Self.Payments" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Races" EntityType="Self.Races" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Registrations" EntityType="Self.Registrations" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Results" EntityType="Self.Results" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Users" EntityType="Self.Users" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Users_Chronometer" EntityType="Self.Users_Chronometer" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Users_Organizer" EntityType="Self.Users_Organizer" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Users_Runner" EntityType="Self.Users_Runner" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_Chronometer_inherits_User" Association="Self.FK_Chronometer_inherits_User">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="Users_Chronometer" EntitySet="Users_Chronometer" />
+          </AssociationSet>
+          <AssociationSet Name="FK_EventOrganizer" Association="Self.FK_EventOrganizer">
+            <End Role="Users_Organizer" EntitySet="Users_Organizer" />
+            <End Role="Events" EntitySet="Events" />
+          </AssociationSet>
+          <AssociationSet Name="FK_MeasuresTime" Association="Self.FK_MeasuresTime">
+            <End Role="Users_Chronometer" EntitySet="Users_Chronometer" />
+            <End Role="Races" EntitySet="Races" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Organizer_inherits_User" Association="Self.FK_Organizer_inherits_User">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="Users_Organizer" EntitySet="Users_Organizer" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PaidFor" Association="Self.FK_PaidFor">
+            <End Role="Invoices" EntitySet="Invoices" />
+            <End Role="Payments" EntitySet="Payments" />
+          </AssociationSet>
+          <AssociationSet Name="FK_RaceEvent" Association="Self.FK_RaceEvent">
+            <End Role="Events" EntitySet="Events" />
+            <End Role="Races" EntitySet="Races" />
+          </AssociationSet>
+          <AssociationSet Name="FK_RegistrateredOn" Association="Self.FK_RegistrateredOn">
+            <End Role="Users_Runner" EntitySet="Users_Runner" />
+            <End Role="Registrations" EntitySet="Registrations" />
+          </AssociationSet>
+          <AssociationSet Name="FK_RegistrationInvoice" Association="Self.FK_RegistrationInvoice">
+            <End Role="Registrations" EntitySet="Registrations" />
+            <End Role="Invoices" EntitySet="Invoices" />
+          </AssociationSet>
+          <AssociationSet Name="FK_RegistrationRace" Association="Self.FK_RegistrationRace">
+            <End Role="Races" EntitySet="Races" />
+            <End Role="Registrations" EntitySet="Registrations" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ResultRegistration" Association="Self.FK_ResultRegistration">
+            <End Role="Registrations" EntitySet="Registrations" />
+            <End Role="Results" EntitySet="Results" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Runner_inherits_User" Association="Self.FK_Runner_inherits_User">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="Users_Runner" EntitySet="Users_Runner" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Supervising" Association="Self.FK_Supervising">
+            <End Role="Users_Organizer" EntitySet="Users_Organizer" />
+            <End Role="Users_Organizer1" EntitySet="Users_Organizer" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema xmlns="http://schemas.microsoft.com/ado/2009/11/edm" xmlns:cg="http://schemas.microsoft.com/ado/2006/04/codegeneration" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" Namespace="RaceModel" Alias="Self" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" annotation:UseStrongSpatialTypes="false">
+        <EntityContainer Name="RaceCenterDbContext" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Results" EntityType="RaceModel.Result" />
+          <EntitySet Name="Payments" EntityType="RaceModel.Payment" />
+          <EntitySet Name="Invoices" EntityType="RaceModel.Invoice" />
+          <EntitySet Name="Registrations" EntityType="RaceModel.Registration" />
+          <EntitySet Name="Events" EntityType="RaceModel.Event" />
+          <EntitySet Name="Races" EntityType="RaceModel.Race" />
+          <EntitySet Name="Users" EntityType="RaceModel.User" />
+          <AssociationSet Name="Supervising" Association="RaceModel.Supervising">
+            <End Role="Organizer" EntitySet="Users" />
+            <End Role="Organizer1" EntitySet="Users" />
+          </AssociationSet>
+          <AssociationSet Name="MeasuresTime" Association="RaceModel.MeasuresTime">
+            <End Role="Chronometer" EntitySet="Users" />
+            <End Role="Race" EntitySet="Races" />
+          </AssociationSet>
+          <AssociationSet Name="RaceEvent" Association="RaceModel.RaceEvent">
+            <End Role="Race" EntitySet="Races" />
+            <End Role="Event" EntitySet="Events" />
+          </AssociationSet>
+          <AssociationSet Name="RegistrateredOn" Association="RaceModel.RegistrateredOn">
+            <End Role="Registration" EntitySet="Registrations" />
+            <End Role="Runner" EntitySet="Users" />
+          </AssociationSet>
+          <AssociationSet Name="EventOrganizer" Association="RaceModel.EventOrganizer">
+            <End Role="Event" EntitySet="Events" />
+            <End Role="Organizer" EntitySet="Users" />
+          </AssociationSet>
+          <AssociationSet Name="PaidFor" Association="RaceModel.PaidFor">
+            <End Role="Invoice" EntitySet="Invoices" />
+            <End Role="Payment" EntitySet="Payments" />
+          </AssociationSet>
+          <AssociationSet Name="RegistrationRace" Association="RaceModel.RegistrationRace">
+            <End Role="Registration" EntitySet="Registrations" />
+            <End Role="Race" EntitySet="Races" />
+          </AssociationSet>
+          <AssociationSet Name="RegistrationInvoice" Association="RaceModel.RegistrationInvoice">
+            <End Role="Registration" EntitySet="Registrations" />
+            <End Role="Invoice" EntitySet="Invoices" />
+          </AssociationSet>
+          <AssociationSet Name="ResultRegistration" Association="RaceModel.ResultRegistration">
+            <End Role="Registration" EntitySet="Registrations" />
+            <End Role="Result" EntitySet="Results" />
+          </AssociationSet>
+          <FunctionImport Name="GetEventChronometers" IsComposable="true" ReturnType="Collection(String)">
+          <Parameter Name="P_Event_ID" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="GetTotalRegistrationPayments" IsComposable="true" ReturnType="Collection(Decimal)">
+            <Parameter Name="P_Runner_Email" Mode="In" Type="String" />
+            <Parameter Name="P_Race_ID" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="ConsolidateStartersList">
+            <Parameter Name="Race_ID" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="GetRunnerExpenses">
+            <Parameter Name="Runner_email" Mode="In" Type="String" />
+            <Parameter Name="Total_Expense" Mode="InOut" Type="Decimal" />
+          </FunctionImport>
+        </EntityContainer>
+        <EntityType Name="Result">
+          <Key>
+            <PropertyRef Name="tagID" />
+          </Key>
+          <Property Name="tagID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <NavigationProperty Name="Registration" Relationship="RaceModel.ResultRegistration" FromRole="Result" ToRole="Registration" />
+          <Property Name="hour" Type="Int32" Nullable="false" />
+          <Property Name="minute" Type="Int32" Nullable="false" />
+          <Property Name="second" Type="Int32" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Payment">
+          <Key>
+            <PropertyRef Name="paymentID" />
+          </Key>
+          <Property Name="paymentID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="moneyPaid" Type="Double" Nullable="false" />
+          <Property Name="type" Type="String" Nullable="false" MaxLength="Max" Unicode="true" FixedLength="false" />
+          <NavigationProperty Name="Invoice" Relationship="RaceModel.PaidFor" FromRole="Payment" ToRole="Invoice" />
+          <Property Name="Invoice_invoiceCode" Type="Guid" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Invoice">
+          <Key>
+            <PropertyRef Name="invoiceCode" />
+          </Key>
+          <Property Name="invoiceCode" Type="Guid" Nullable="false" annotation:StoreGeneratedPattern="None" />
+          <NavigationProperty Name="Payments" Relationship="RaceModel.PaidFor" FromRole="Invoice" ToRole="Payment" />
+          <NavigationProperty Name="Registration" Relationship="RaceModel.RegistrationInvoice" FromRole="Invoice" ToRole="Registration" />
+        </EntityType>
+        <EntityType Name="Registration" >
+          <Key>
+            <PropertyRef Name="Runner_email" />
+            <PropertyRef Name="Race_raceID" />
+          </Key>
+          <Property Name="startNumber" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Runner" Relationship="RaceModel.RegistrateredOn" FromRole="Registration" ToRole="Runner" />
+          <Property Name="Runner_email" Type="String" Nullable="false" MaxLength="100" Unicode="true" FixedLength="false" />
+          <NavigationProperty Name="Race" Relationship="RaceModel.RegistrationRace" FromRole="Registration" ToRole="Race" />
+          <Property Name="Race_raceID" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Invoice" Relationship="RaceModel.RegistrationInvoice" FromRole="Registration" ToRole="Invoice" />
+          <NavigationProperty Name="Result" Relationship="RaceModel.ResultRegistration" FromRole="Registration" ToRole="Result" />
+        </EntityType>
+        <EntityType Name="Event">
+          <Key>
+            <PropertyRef Name="eventID" />
+          </Key>
+          <Property Name="eventID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="name" Type="String" Nullable="false" MaxLength="Max" Unicode="true" FixedLength="false" />
+          <Property Name="website" Type="String" Nullable="true" MaxLength="Max" Unicode="true" FixedLength="false" />
+          <Property Name="bankAccount" Type="String" Nullable="false" MaxLength="Max" Unicode="true" FixedLength="false" />
+          <Property Name="startDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="endDate" Type="DateTime" Nullable="false" Precision="3" />
+          <NavigationProperty Name="Races" Relationship="RaceModel.RaceEvent" FromRole="Event" ToRole="Race" />
+          <NavigationProperty Name="Organizer" Relationship="RaceModel.EventOrganizer" FromRole="Event" ToRole="Organizer" />
+          <Property Name="Organizer_email" Type="String" Nullable="false" MaxLength="100" Unicode="true" FixedLength="false" />
+        </EntityType>
+        <EntityType Name="Race">
+          <Key>
+            <PropertyRef Name="raceID" />
+          </Key>
+          <Property Name="raceID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="distance" Type="Double" Nullable="false" />
+          <Property Name="date" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="name" Type="String" Nullable="false" MaxLength="Max" Unicode="true" FixedLength="false" />
+          <Property Name="minStartNumber" Type="Int32" Nullable="false" />
+          <Property Name="maxStartNumber" Type="Int32" Nullable="false" />
+          <Property Name="type" Type="String" Nullable="false" MaxLength="Max" Unicode="true" FixedLength="false" />
+          <Property Name="startFarePrice" Type="Double" Nullable="false" />
+          <NavigationProperty Name="Chronometer" Relationship="RaceModel.MeasuresTime" FromRole="Race" ToRole="Chronometer" />
+          <Property Name="Chronometer_email" Type="String" Nullable="true" MaxLength="100" Unicode="true" FixedLength="false" />
+          <NavigationProperty Name="Event" Relationship="RaceModel.RaceEvent" FromRole="Race" ToRole="Event" />
+          <Property Name="Event_eventID" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Registrations" Relationship="RaceModel.RegistrationRace" FromRole="Race" ToRole="Registration" />
+        </EntityType>
+        <EntityType Name="User">
+          <Key>
+            <PropertyRef Name="email" />
+          </Key>
+          <Property Name="email" Type="String" Nullable="false" annotation:StoreGeneratedPattern="None" MaxLength="100" Unicode="true" FixedLength="false" />
+          <Property Name="firstName" Type="String" Nullable="false" MaxLength="Max" Unicode="true" FixedLength="false" />
+          <Property Name="lastName" Type="String" Nullable="false" MaxLength="Max" Unicode="true" FixedLength="false" />
+          <Property Name="address" Type="String" Nullable="true" MaxLength="Max" Unicode="true" FixedLength="false" />
+          <Property Name="password" Type="String" Nullable="false" MaxLength="Max" Unicode="true" FixedLength="false" />
+        </EntityType>
+        <EntityType Name="Runner" BaseType="RaceModel.User" >
+          <Property Name="club" Type="String" Unicode="true" FixedLength="false" MaxLength="Max" />
+          <NavigationProperty Name="Registrations" Relationship="RaceModel.RegistrateredOn" FromRole="Runner" ToRole="Registration" />
+        </EntityType>
+        <EntityType Name="Organizer" BaseType="RaceModel.User" >
+          <Property Name="isAdmin" Type="Boolean" Nullable="false" />
+          <Property Name="phoneNumber" Type="String" Nullable="true" MaxLength="Max" Unicode="true" FixedLength="false" />
+          <NavigationProperty Name="Employees" Relationship="RaceModel.Supervising" FromRole="Organizer" ToRole="Organizer1" />
+          <NavigationProperty Name="Supervisor" Relationship="RaceModel.Supervising" FromRole="Organizer1" ToRole="Organizer" />
+          <Property Name="supervisorEmail" Type="String" Nullable="true" MaxLength="100" Unicode="true" FixedLength="false" />
+          <NavigationProperty Name="Events" Relationship="RaceModel.EventOrganizer" FromRole="Organizer" ToRole="Event" />
+        </EntityType>
+        <EntityType Name="Chronometer" BaseType="RaceModel.User" >
+          <Property Name="companyName" Type="String" Nullable="false" MaxLength="Max" Unicode="true" FixedLength="false" />
+          <NavigationProperty Name="Races" Relationship="RaceModel.MeasuresTime" FromRole="Chronometer" ToRole="Race" />
+        </EntityType>
+        <Association Name="Supervising">
+          <End Type="RaceModel.Organizer" Role="Organizer" Multiplicity="0..1" />
+          <End Type="RaceModel.Organizer" Role="Organizer1" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Organizer">
+              <PropertyRef Name="email" />
+            </Principal>
+            <Dependent Role="Organizer1">
+              <PropertyRef Name="supervisorEmail" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="MeasuresTime">
+          <End Type="RaceModel.Chronometer" Role="Chronometer" Multiplicity="0..1" />
+          <End Type="RaceModel.Race" Role="Race" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Chronometer">
+              <PropertyRef Name="email" />
+            </Principal>
+            <Dependent Role="Race">
+              <PropertyRef Name="Chronometer_email" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="RaceEvent">
+          <End Type="RaceModel.Race" Role="Race" Multiplicity="*" />
+          <End Type="RaceModel.Event" Role="Event" Multiplicity="1" >
+            <OnDelete Action="Cascade" />
+          </End>
+          <ReferentialConstraint>
+            <Principal Role="Event">
+              <PropertyRef Name="eventID" />
+            </Principal>
+            <Dependent Role="Race">
+              <PropertyRef Name="Event_eventID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="RegistrateredOn">
+          <End Type="RaceModel.Registration" Role="Registration" Multiplicity="*" />
+          <End Type="RaceModel.Runner" Role="Runner" Multiplicity="1" >
+            <OnDelete Action="Cascade" />
+          </End>
+          <ReferentialConstraint>
+            <Principal Role="Runner">
+              <PropertyRef Name="email" />
+            </Principal>
+            <Dependent Role="Registration">
+              <PropertyRef Name="Runner_email" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="EventOrganizer">
+          <End Type="RaceModel.Event" Role="Event" Multiplicity="*" />
+          <End Type="RaceModel.Organizer" Role="Organizer" Multiplicity="1" >
+            <OnDelete Action="Cascade" />
+          </End>
+          <ReferentialConstraint>
+            <Principal Role="Organizer">
+              <PropertyRef Name="email" />
+            </Principal>
+            <Dependent Role="Event">
+              <PropertyRef Name="Organizer_email" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="PaidFor">
+          <End Type="RaceModel.Invoice" Role="Invoice" Multiplicity="1" >
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="RaceModel.Payment" Role="Payment" Multiplicity="*" >
+          </End>
+          <ReferentialConstraint>
+            <Principal Role="Invoice">
+              <PropertyRef Name="invoiceCode" />
+            </Principal>
+            <Dependent Role="Payment">
+              <PropertyRef Name="Invoice_invoiceCode" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="RegistrationRace">
+          <End Type="RaceModel.Registration" Role="Registration" Multiplicity="*" />
+          <End Type="RaceModel.Race" Role="Race" Multiplicity="1" >
+            <OnDelete Action="Cascade" />
+          </End>
+          <ReferentialConstraint>
+            <Principal Role="Race">
+              <PropertyRef Name="raceID" />
+            </Principal>
+            <Dependent Role="Registration">
+              <PropertyRef Name="Race_raceID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="RegistrationInvoice">
+          <End Type="RaceModel.Registration" Role="Registration" Multiplicity="1" >
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="RaceModel.Invoice" Role="Invoice" Multiplicity="0..1" />
+        </Association>
+        <Association Name="ResultRegistration">
+          <End Type="RaceModel.Registration" Role="Registration" Multiplicity="1" >
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="RaceModel.Result" Role="Result" Multiplicity="0..1" />
+        </Association>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+    <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+  <EntityContainerMapping StorageEntityContainer="RaceModelStoreContainer" CdmEntityContainer="RaceCenterDbContext">
+    <EntitySetMapping Name="Results">
+      <EntityTypeMapping TypeName="IsTypeOf(RaceModel.Result)">
+        <MappingFragment StoreEntitySet="Results">
+          <ScalarProperty Name="tagID" ColumnName="tagID" />
+          <ScalarProperty Name="hour" ColumnName="hour" />
+          <ScalarProperty Name="minute" ColumnName="minute" />
+          <ScalarProperty Name="second" ColumnName="second" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Payments">
+      <EntityTypeMapping TypeName="IsTypeOf(RaceModel.Payment)">
+        <MappingFragment StoreEntitySet="Payments">
+          <ScalarProperty Name="paymentID" ColumnName="paymentID" />
+          <ScalarProperty Name="moneyPaid" ColumnName="moneyPaid" />
+          <ScalarProperty Name="type" ColumnName="type" />
+          <ScalarProperty Name="Invoice_invoiceCode" ColumnName="Invoice_invoiceCode" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Invoices">
+      <EntityTypeMapping TypeName="IsTypeOf(RaceModel.Invoice)">
+        <MappingFragment StoreEntitySet="Invoices">
+          <ScalarProperty Name="invoiceCode" ColumnName="invoiceCode" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Registrations">
+      <EntityTypeMapping TypeName="IsTypeOf(RaceModel.Registration)">
+        <MappingFragment StoreEntitySet="Registrations">
+          <ScalarProperty Name="Runner_email" ColumnName="Runner_email" />
+          <ScalarProperty Name="Race_raceID" ColumnName="Race_raceID" />
+          <ScalarProperty Name="startNumber" ColumnName="startNumber" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Events">
+      <EntityTypeMapping TypeName="IsTypeOf(RaceModel.Event)">
+        <MappingFragment StoreEntitySet="Events">
+          <ScalarProperty Name="eventID" ColumnName="eventID" />
+          <ScalarProperty Name="name" ColumnName="name" />
+          <ScalarProperty Name="website" ColumnName="website" />
+          <ScalarProperty Name="bankAccount" ColumnName="bankAccount" />
+          <ScalarProperty Name="startDate" ColumnName="startDate" />
+          <ScalarProperty Name="endDate" ColumnName="endDate" />
+          <ScalarProperty Name="Organizer_email" ColumnName="Organizer_email" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Races">
+      <EntityTypeMapping TypeName="IsTypeOf(RaceModel.Race)">
+        <MappingFragment StoreEntitySet="Races">
+          <ScalarProperty Name="raceID" ColumnName="raceID" />
+          <ScalarProperty Name="distance" ColumnName="distance" />
+          <ScalarProperty Name="date" ColumnName="date" />
+          <ScalarProperty Name="name" ColumnName="name" />
+          <ScalarProperty Name="minStartNumber" ColumnName="minStartNumber" />
+          <ScalarProperty Name="maxStartNumber" ColumnName="maxStartNumber" />
+          <ScalarProperty Name="type" ColumnName="type" />
+          <ScalarProperty Name="startFarePrice" ColumnName="startFarePrice" />
+          <ScalarProperty Name="Chronometer_email" ColumnName="Chronometer_email" />
+          <ScalarProperty Name="Event_eventID" ColumnName="Event_eventID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Users">
+      <EntityTypeMapping TypeName="IsTypeOf(RaceModel.User)">
+        <MappingFragment StoreEntitySet="Users">
+          <ScalarProperty Name="email" ColumnName="email" />
+          <ScalarProperty Name="firstName" ColumnName="firstName" />
+          <ScalarProperty Name="lastName" ColumnName="lastName" />
+          <ScalarProperty Name="address" ColumnName="address" />
+          <ScalarProperty Name="password" ColumnName="password" />
+        </MappingFragment>
+      </EntityTypeMapping>
+      <EntityTypeMapping TypeName="IsTypeOf(RaceModel.Organizer)">
+        <MappingFragment StoreEntitySet="Users_Organizer">
+          <ScalarProperty Name="email" ColumnName="email" />
+          <ScalarProperty Name="isAdmin" ColumnName="isAdmin" />
+          <ScalarProperty Name="phoneNumber" ColumnName="phoneNumber" />
+          <ScalarProperty Name="supervisorEmail" ColumnName="supervisorEmail" />
+        </MappingFragment>
+      </EntityTypeMapping>
+      <EntityTypeMapping TypeName="IsTypeOf(RaceModel.Chronometer)">
+        <MappingFragment StoreEntitySet="Users_Chronometer">
+          <ScalarProperty Name="email" ColumnName="email" />
+          <ScalarProperty Name="companyName" ColumnName="companyName" />
+        </MappingFragment>
+      </EntityTypeMapping>
+      <EntityTypeMapping TypeName="IsTypeOf(RaceModel.Runner)">
+        <MappingFragment StoreEntitySet="Users_Runner">
+          <ScalarProperty Name="email" ColumnName="email" />
+          <ScalarProperty Name="club" ColumnName="club" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <AssociationSetMapping Name="RegistrationInvoice" TypeName="RaceModel.RegistrationInvoice" StoreEntitySet="Invoices">
+      <EndProperty Name="Registration">
+        <ScalarProperty Name="Runner_email" ColumnName="Registration_Runner_email" />
+        <ScalarProperty Name="Race_raceID" ColumnName="Registration_Race_raceID" />
+      </EndProperty>
+      <EndProperty Name="Invoice">
+        <ScalarProperty Name="invoiceCode" ColumnName="invoiceCode" />
+      </EndProperty>
+    </AssociationSetMapping>
+    <AssociationSetMapping Name="ResultRegistration" TypeName="RaceModel.ResultRegistration" StoreEntitySet="Results">
+      <EndProperty Name="Registration">
+        <ScalarProperty Name="Runner_email" ColumnName="Registration_Runner_email" />
+        <ScalarProperty Name="Race_raceID" ColumnName="Registration_Race_raceID" />
+      </EndProperty>
+      <EndProperty Name="Result">
+        <ScalarProperty Name="tagID" ColumnName="tagID" />
+      </EndProperty>
+    </AssociationSetMapping>
+          <FunctionImportMapping FunctionImportName="GetEventChronometers" FunctionName="RaceModel.Store.GetEventChronometers" />
+          <FunctionImportMapping FunctionImportName="GetTotalRegistrationPayments" FunctionName="RaceModel.Store.GetTotalRegistrationPayments" />
+          <FunctionImportMapping FunctionImportName="ConsolidateStartersList" FunctionName="RaceModel.Store.ConsolidateStartersList" />
+          <FunctionImportMapping FunctionImportName="GetRunnerExpenses" FunctionName="RaceModel.Store.GetRunnerExpenses" />
+  </EntityContainerMapping>
+</Mapping></edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <edmx:Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </edmx:Connection>
+    <edmx:Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="True" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+        <DesignerProperty Name="UseLegacyProvider" Value="True" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="True" />
+      </DesignerInfoPropertySet>
+    </edmx:Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

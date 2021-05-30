@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="1b2517c53a08437698f51273c3357001" Name="Diagram1" >
+        <EntityTypeShape EntityType="RaceModel.Result" Width="1.5" PointX="1.5" PointY="4.25" />
+        <EntityTypeShape EntityType="RaceModel.Payment" Width="1.5" PointX="12.5" PointY="6.125" />
+        <EntityTypeShape EntityType="RaceModel.Invoice" Width="1.5" PointX="12.625" PointY="3.5" />
+        <EntityTypeShape EntityType="RaceModel.Registration" Width="1.5" PointX="4.5" PointY="4.5" />
+        <EntityTypeShape EntityType="RaceModel.Event" Width="1.5" PointX="7" PointY="4.125" />
+        <EntityTypeShape EntityType="RaceModel.Race" Width="1.5" PointX="9.625" PointY="5.125" />
+        <EntityTypeShape EntityType="RaceModel.User" Width="1.5" PointX="3.625" PointY="0.5" />
+        <EntityTypeShape EntityType="RaceModel.Runner" Width="1.5" PointX="5.75" PointY="2" />
+        <InheritanceConnector EntityType="RaceModel.Runner" />
+        <EntityTypeShape EntityType="RaceModel.Organizer" Width="1.5" PointX="8.375" PointY="0.5" />
+        <InheritanceConnector EntityType="RaceModel.Organizer" />
+        <EntityTypeShape EntityType="RaceModel.Chronometer" Width="1.5" PointX="11" PointY="0.5" />
+        <InheritanceConnector EntityType="RaceModel.Chronometer" />
+        <AssociationConnector Association="RaceModel.Supervising" />
+        <AssociationConnector Association="RaceModel.MeasuresTime" />
+        <AssociationConnector Association="RaceModel.RaceEvent" />
+        <AssociationConnector Association="RaceModel.RegistrateredOn" />
+        <AssociationConnector Association="RaceModel.EventOrganizer" />
+        <AssociationConnector Association="RaceModel.PaidFor" />
+        <AssociationConnector Association="RaceModel.RegistrationRace" />
+        <AssociationConnector Association="RaceModel.RegistrationInvoice" />
+        <AssociationConnector Association="RaceModel.ResultRegistration" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>
