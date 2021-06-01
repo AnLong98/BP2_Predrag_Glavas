@@ -100,7 +100,7 @@ namespace Service.Services
                                                .Include("Runner")
                                                .Include("Invoice")
                                                .Include("Result")
-                                               .SingleOrDefault(x => x.Runner_email == entity.Runner_email && x.Race_raceID == x.Race_raceID);
+                                               .SingleOrDefault(x => x.Runner_email == entity.Runner_email && x.Race_raceID == entity.Race_raceID );
                 if (registration == null)
                     throw new EntityDoesNotExistException($"Registration  does not exist");
                 registration.startNumber = entity.startNumber;

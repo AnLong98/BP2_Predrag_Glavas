@@ -102,6 +102,12 @@ namespace Service.Services
                 user.password = entity.password;
                 user.isAdmin = entity.isAdmin;
                 user.supervisorEmail = entity.supervisorEmail;
+                if (user.supervisorEmail == "")
+                {
+                    user.Supervisor = null;
+                    user.supervisorEmail = null;
+                }
+                    
 
                 _dbContext.SaveChanges();
 
